@@ -1,6 +1,10 @@
 # Data files
 data/
 
+
+# Jupyter PID & Log
+jupyter.pid
+jupyter.log
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

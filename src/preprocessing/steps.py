@@ -10,7 +10,6 @@ def normalize(x: np.ndarray):
     return  x / x.max()
 
 
-
 def kfold_train_val_split(
         src_zip_path: str, 
         src_lbl_path: str, 
@@ -43,9 +42,11 @@ def brain_dataset(
         src_zip = zip_.ZipFile(src_zip_path)
         for file, label in zip(X, y):
             source_pixel_array = utl.get_brain_image_pixel_array(src_zip, file)
-            target_pixel_array = utl.get_brain_slice(source_pixel_array, brain_slice_pos, brain_segments)
+            target_pixel_array = utl.get_brain_slice(source_pixel_array, brain_slice_pos, brain_segments)            
             if target_pixel_array.shape == (img_width, img_height):
-                yield label, target_pixel_array
+                target_pixel_array = np.expand_dims(target_pixel_array, axis=-1)
+                # target_pixel_array = tf.reshape(target_pixel_array, [-1,128,128,1])
+                yield target_pixel_array, label
     return _data_gen
 
 def brain_tf_dataset(data: brain_dataset, img_height: int = 128, img_width: int = 128):
@@ -57,8 +58,8 @@ def brain_tf_dataset(data: brain_dataset, img_height: int = 128, img_width: int 
         .from_generator(
             data,        
             output_signature=(            
-                tf.TensorSpec(shape=(), dtype=tf.int32),
-                tf.TensorSpec(shape=(img_height, img_width), dtype=tf.float64)
+                tf.TensorSpec(shape=(img_height, img_width, 1), dtype=tf.float64),
+                tf.TensorSpec(shape=(), dtype=tf.int32),                
             )
         )
     )

@@ -14,8 +14,7 @@ def get_brain_slice(pixel_array: np.ndarray, pos: tuple = (0,0), segments: tuple
 def get_brain_image_pixel_array(src_zip: zip.ZipFile, img_path: str):
     with src_zip.open(img_path, "r") as f:
         ds = dcmread(f)
-        f.close()
-    print("WTF!!!",img_path)
+        f.close()    
     return ds.pixel_array
 
 
@@ -40,5 +39,5 @@ def get_data(srczip: zip.ZipFile, lables_path: str) -> pd.DataFrame:
             on = "subject"            
         )
     )
-    return data
+    return data[data.subject != '105']
             

@@ -6,7 +6,7 @@ from sklearn.model_selection import GroupKFold
 import preprocessing.utils as utl
 
 
-def normalize(x: np):
+def normalize(x: np.ndarray):
     return  x / x.max()
 
 
@@ -48,7 +48,10 @@ def brain_dataset(
 def brain_tf_dataset(data: brain_dataset, img_height: int = 128, img_width: int = 128):
 
     dataset = (
-        tf.data.Dataset.from_generator(
+        tf
+        .data
+        .Dataset
+        .from_generator(
             data,        
             output_signature=(            
                 tf.TensorSpec(shape=(), dtype=tf.int32),
@@ -56,3 +59,5 @@ def brain_tf_dataset(data: brain_dataset, img_height: int = 128, img_width: int 
             )
         )
     )
+
+    return dataset

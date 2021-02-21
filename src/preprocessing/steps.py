@@ -17,10 +17,10 @@ def kfold_train_val_split(
         cross_valid_n_splits: int = 2
     ):
     src_zip = zip_.ZipFile(src_zip_path)
-    df_base = get_data(src_zip, src_lbl_path)
+    df_base = utl.get_data(src_zip, src_lbl_path)
 
     # Prepare cross validation sets    
-    group_kfold = GroupKFold(cross_valid_n_splits=2)
+    group_kfold = GroupKFold(n_splits=cross_valid_n_splits)
     group_kfold.get_n_splits(df_base.file.values, df_base.y.values, df_base.subject.values)
 
     # generate data
@@ -35,15 +35,18 @@ def brain_dataset(
         y: np.ndarray,
         src_zip_path: str,         
         brain_slice_pos: tuple, 
-        brain_segments: tuple = (8,8),        
+        brain_segments: tuple = (8,8),      
+        img_height: int = 128, 
+        img_width: int = 128,
     ):
-
-    src_zip = zip_.ZipFile(src_zip_path)
-    for file, label in zip(X, y):
-        source_pixel_array = utl.get_brain_image_pixel_array(src_zip, file)
-        target_pixel_array = get_brain_slice(source_pixel_array, brain_slice_pos, brain_segments)
-        yield label, target_pixel_array
-
+    def _data_gen():
+        src_zip = zip_.ZipFile(src_zip_path)
+        for file, label in zip(X, y):
+            source_pixel_array = utl.get_brain_image_pixel_array(src_zip, file)
+            target_pixel_array = utl.get_brain_slice(source_pixel_array, brain_slice_pos, brain_segments)
+            if target_pixel_array.shape == (img_width, img_height):
+                yield label, target_pixel_array
+    return _data_gen
 
 def brain_tf_dataset(data: brain_dataset, img_height: int = 128, img_width: int = 128):
 

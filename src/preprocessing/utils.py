@@ -15,6 +15,7 @@ def get_brain_image_pixel_array(src_zip: zip.ZipFile, img_path: str):
     with src_zip.open(img_path, "r") as f:
         ds = dcmread(f)
         f.close()
+    print("WTF!!!",img_path)
     return ds.pixel_array
 
 

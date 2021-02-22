@@ -67,7 +67,7 @@ class DataGenerator(keras.utils.Sequence):
             X[idx, ] = np.expand_dims(target_pixel_array, axis=-1)
             y[idx] = label
 
-        return X, keras.utils.to_categorical(y, num_classes=self.n_classes)
+        return X, y        
 
 
     def __get_brain_slice(self, pixel_array: np.ndarray, pos: tuple = (0,0), segments: tuple = (8,8)):    

@@ -18,6 +18,10 @@ def kfold_train_val_split(
     src_zip = zip_.ZipFile(src_zip_path)
     df_base = utl.get_data(src_zip, src_lbl_path)
 
+    # Filter bad data
+    df_base = df_base[df_base.subject != 105]
+    df_base = df_base[-df_base.y.isnull()]
+
     # Prepare cross validation sets    
     group_kfold = GroupKFold(n_splits=cross_valid_n_splits)
     group_kfold.get_n_splits(df_base.file.values, df_base.y.values, df_base.subject.values)
